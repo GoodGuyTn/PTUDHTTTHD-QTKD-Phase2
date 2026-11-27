@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+*.user
+.vs/
+.vscode/
+.idea/
+
+# Test results (file TRX nộp bài sẽ copy vào docs/)
+TestResults/
+
+# Bí mật — không đưa lên Git
+.env
+appsettings.*.local.json
+**/secrets.json
+
+# Tài liệu đề bài (không thuộc mã nguồn)
+/TH_Phase2_QTKD.pdf
+/QTKD_DATH.pdf
+/Week_02_Requirements_Analysis_QTKD.pdf
+/Thắc mắc.png
+HANDOFF_PHASE2.md
