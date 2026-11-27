@@ -1,0 +1,37 @@
+@startuml architecture_components
+' Sơ đồ thành phần solution QTKD (tuần 05)
+!pragma layout smetana
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam ArrowColor #333333
+skinparam package {
+  BackgroundColor #FAFAFF
+  BorderColor #6C6CA8
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+}
+left to right direction
+
+actor "Client\n(Postman / Swagger UI)" as Client
+
+package "QTKD.slnx" {
+  component "**QTKD.Api**\n--\nControllers\nExceptionMiddleware\nProgram.cs (đăng ký DI)" as Api #E8F1FF
+  component "**QTKD.Application**\n--\nServices (nghiệp vụ)\nDTOs\nInterface Repository\nExceptions" as App #EAF7EA
+  component "**QTKD.Infrastructure**\n--\nQtkdDbContext\nEF Configurations + Seed\nMigrations\nRepositories" as Infra #FFF4E5
+  component "**QTKD.Domain**\n--\nCustomer, Contract\nPriceList, PriceItem\nContractStatus, CustomerStatus" as Domain #F3EAFB
+}
+
+database "PostgreSQL 16\n(Docker, cổng 5433)" as DB
+
+Client --> Api : HTTP/JSON
+Api --> App : gọi Service
+Api ..> Infra : chỉ để đăng ký DI
+Infra --> App : cài đặt\ninterface Repository
+App --> Domain
+Infra --> Domain
+Infra --> DB : Npgsql / EF Core
+@enduml

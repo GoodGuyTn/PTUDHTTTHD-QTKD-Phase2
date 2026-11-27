@@ -1,0 +1,44 @@
+@startuml architecture_erd
+' Mô hình dữ liệu tuần 05 (bảng PostgreSQL do migration InitialCreate tạo)
+!pragma layout smetana
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam linetype ortho
+hide circle
+hide methods
+
+entity "Customers" as Customers #F3EAFB {
+  * **Id** : int <<PK>>
+  --
+  * Name : varchar(200)
+  * Status : varchar(20)  // Active | Inactive
+}
+
+entity "Contracts" as Contracts #E8F1FF {
+  * **Id** : int <<PK>>
+  --
+  * ContractNo : varchar(50) <<UNIQUE>>
+  * CustomerId : int <<FK>>
+  * StartDate : date
+  * EndDate : date  // CHECK EndDate >= StartDate
+  * Status : varchar(30)  // Draft | PendingApproval | ...
+}
+
+entity "PriceLists" as PriceLists #FFF4E5 {
+  * **Id** : int <<PK>>
+  --
+  * Name : varchar(200)
+  * EffectiveDate : date
+}
+
+entity "PriceItems" as PriceItems #EAF7EA {
+  * **PriceListId** : int <<PK, FK>>
+  * **ServiceCode** : varchar(50) <<PK>>
+  --
+  * UnitPrice : numeric(18,2)  // CHECK >= 0
+}
+
+Customers ||--o{ Contracts : có
+PriceLists ||--|{ PriceItems : gồm
+@enduml

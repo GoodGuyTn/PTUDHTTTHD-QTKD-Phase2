@@ -1,0 +1,33 @@
+@startuml architecture_request_flow
+' Luồng xử lý GET /api/contracts/{id}
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 15
+autonumber
+
+actor "Client" as C
+participant "ContractsController\n(QTKD.Api)" as Ctl #E8F1FF
+participant "ContractService\n(QTKD.Application)" as S #EAF7EA
+participant "ContractRepository\n(QTKD.Infrastructure)" as R #FFF4E5
+database "PostgreSQL" as Db
+
+C -> Ctl : GET /api/contracts/1
+Ctl -> S : GetByIdAsync(1)
+S -> R : GetByIdAsync(1)
+R -> Db : SELECT ... FROM "Contracts"\nJOIN "Customers"
+
+alt Có hợp đồng
+  Db --> R : 1 dòng
+  R --> S : Contract (kèm Customer)
+  S --> Ctl : ContractDto
+  Ctl --> C : 200 OK + JSON
+else Không có hợp đồng
+  Db --> R : 0 dòng
+  R --> S : null
+  S -> S : throw NotFoundException
+  note over Ctl, S : ExceptionMiddleware bắt exception
+  Ctl --> C : 404 Not Found (ProblemDetails)
+end
+@enduml
